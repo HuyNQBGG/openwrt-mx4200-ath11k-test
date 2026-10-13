@@ -1,0 +1,29 @@
+Subject: [PATCH] ath11k: experimental five-ring reduction for MX4200 v1
+
+Adapted from the GPL-2.0 mitigation by enspect.
+Source: https://github.com/enspect/ath11k-ipq807x-rx-buffer-oom-fix
+Correction: OpenWrt issue #24154, keep refill buffer size at 2048.
+Only five ring constants are changed. Not upstream-approved.
+Runtime testing on this device is still required.
+
+--- a/drivers/net/wireless/ath/ath11k/dp.h
++++ b/drivers/net/wireless/ath/ath11k/dp.h
+@@ -217,13 +217,13 @@
+ #define DP_REO_EXCEPTION_RING_SIZE	128
+ #define DP_REO_CMD_RING_SIZE		256
+ #define DP_REO_STATUS_RING_SIZE		2048
+-#define DP_RXDMA_BUF_RING_SIZE		4096
++#define DP_RXDMA_BUF_RING_SIZE		2048
+ #define DP_RXDMA_REFILL_RING_SIZE	2048
+ #define DP_RXDMA_ERR_DST_RING_SIZE	1024
+-#define DP_RXDMA_MON_STATUS_RING_SIZE	1024
+-#define DP_RXDMA_MONITOR_BUF_RING_SIZE	4096
+-#define DP_RXDMA_MONITOR_DST_RING_SIZE	2048
+-#define DP_RXDMA_MONITOR_DESC_RING_SIZE	4096
++#define DP_RXDMA_MON_STATUS_RING_SIZE	512
++#define DP_RXDMA_MONITOR_BUF_RING_SIZE	2048
++#define DP_RXDMA_MONITOR_DST_RING_SIZE	1024
++#define DP_RXDMA_MONITOR_DESC_RING_SIZE	2048
+ 
+ #define DP_RX_RELEASE_RING_NUM	3
+ 

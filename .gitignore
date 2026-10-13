@@ -1,0 +1,8 @@
+openwrt/
+artifact/
+evidence/
+*.tar.gz
+*.bin
+*.state
+*.key
+__pycache__/
