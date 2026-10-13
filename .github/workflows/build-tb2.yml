@@ -72,11 +72,16 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p artifact
-          image=openwrt/bin/targets/qualcommax/ipq807x/openwrt-25.12.5-qualcommax-ipq807x-linksys_mx4200v1-squashfs-sysupgrade.bin
+          target_dir=openwrt/bin/targets/qualcommax/ipq807x
+          ls -lh "$target_dir"
+          shopt -s nullglob
+          candidates=("$target_dir"/openwrt*-qualcommax-ipq807x-linksys_mx4200v1-squashfs-sysupgrade.bin)
+          test "${#candidates[@]}" -eq 1
+          image="${candidates[0]}"
           test -s "$image"
           cp "$image" artifact/
           openwrt/staging_dir/host/bin/fwtool -i artifact/image-metadata.json "$image"
-          python3 -c 'import json; m=json.load(open("artifact/image-metadata.json")); assert "linksys,mx4200v1" in m["supported_devices"], m'
+          python3 -c 'import json; m=json.load(open("artifact/image-metadata.json")); assert "linksys,mx4200v1" in m["supported_devices"], m; assert m["version"]["version"] == "25.12.5", m; assert m["version"]["target"] == "qualcommax/ipq807x", m'
           cp openwrt/bin/targets/qualcommax/ipq807x/*.manifest artifact/
           cp openwrt/bin/targets/qualcommax/ipq807x/profiles.json artifact/
           cp patches/950-ath11k-five-rings-mx4200.patch artifact/
