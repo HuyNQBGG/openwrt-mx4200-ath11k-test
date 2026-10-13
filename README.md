@@ -22,7 +22,7 @@ Successful compilation does not establish safety or solve every OOM cause.
 
 ## Build
 
-Use Actions → Build MX4200 v1 experimental ath11k fix → Run workflow.
+Use Actions â†’ Build MX4200 v1 experimental ath11k fix â†’ Run workflow.
 Only a manual dispatch runs the build. No router configuration or secrets
 are included. The workflow never connects to or flashes a router.
 
@@ -60,3 +60,7 @@ DNS, Internet and throughput under comparable traffic for at least 24 h.
 
 Patch file: GPL-2.0-only, matching the ath11k source and original mitigation.
 Local build/verification scripts and recipe: MIT.
+
+## TB1 service-preserving build
+
+`build-tb1.yml` uses `config/tb1.config`. It includes Tailscale, Adblock-fast, Wake-on-LAN and their LuCI interfaces plus existing diagnostics. Only Tailscale/Go and Adblock-fast package directories are overlaid from the exact official stable-branch commits recorded in `config/tb1-service-pins.txt`, preserving installed Tailscale 1.102.3-r1 and Adblock-fast 1.2.4-r4. Core firmware and the five-ring driver patch stay identical to TB2. Other release-pinned package versions may differ from TB1. Deployment must preserve the off-router-backed-up Tailscale state and configuration, validate the new image on TB1, and check VPN, DHCP/DNS, WAN and mesh after boot. This workflow never accesses or flashes routers.

@@ -1,0 +1,4 @@
+OpenWrt core and standard feeds: same v25.12.5 pins as TB2
+Tailscale 1.102.3-r1 + Go build toolchain: openwrt/packages commit 5d6ecf4803ed041c9f76271e1d1e27e976a68c72 (openwrt-25.12 branch)
+Adblock-fast 1.2.4-r4: openwrt/packages commit bcf4ecc04c36eced377a33422525283e6c4bf3f4 (openwrt-25.12 branch)
+No router configuration or Tailscale identity in repository/artifacts.
