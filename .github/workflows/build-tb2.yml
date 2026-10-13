@@ -44,8 +44,6 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install -a
           cp ../config/tb2.config .config
-          cp -a ../files .
-          chmod 755 files/etc/uci-defaults/99-tb2-manual-mesh
           cp ../patches/950-ath11k-five-rings-mx4200.patch package/kernel/mac80211/patches/ath11k/
           python3 ../scripts/bump-release.py package/kernel/mac80211/Makefile
           make defconfig
@@ -57,6 +55,7 @@ jobs:
             esac
           done < ../config/tb2.config
           if grep -q '^CONFIG_PACKAGE_wpad-basic-mbedtls=y' .config; then exit 1; fi
+          if grep -q '^CONFIG_PACKAGE_mesh11sd=y' .config; then exit 1; fi
           ./scripts/diffconfig.sh > ../evidence/diffconfig.txt
           cp .config ../evidence/full.config
 
@@ -90,9 +89,10 @@ jobs:
           openwrt/staging_dir/host/bin/fwtool -i artifact/image-metadata.json "$image"
           python3 -c 'import json; m=json.load(open("artifact/image-metadata.json")); assert "linksys,mx4200v1" in m["supported_devices"], m; assert m["version"]["version"] == "25.12.5", m; assert m["version"]["target"] == "qualcommax/ipq807x", m'
           cp openwrt/bin/targets/qualcommax/ipq807x/*.manifest artifact/
+          if grep -Eq '^mesh11sd[[:space:]]' artifact/*.manifest; then exit 1; fi
+          grep -Eq '^wpad-mbedtls[[:space:]]' artifact/*.manifest
           cp openwrt/bin/targets/qualcommax/ipq807x/profiles.json artifact/
           cp patches/950-ath11k-five-rings-mx4200.patch artifact/
-          cp files/etc/uci-defaults/99-tb2-manual-mesh artifact/tb2-firstboot-service-guard.sh
           cp README.md artifact/
           cp evidence/openwrt-commit.txt evidence/feeds.conf.default evidence/diffconfig.txt evidence/full.config artifact/
           find openwrt/build_dir -type f -path '*/ath11k/ath11k.ko' -exec sha256sum '{}' \; > artifact/ath11k-module-build-hashes.txt

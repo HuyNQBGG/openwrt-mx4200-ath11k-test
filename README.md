@@ -43,11 +43,13 @@ Before flashing TB2:
 6. Compare the artifact package manifest to the installed package list;
    this recipe includes full wpad-mbedtls, LuCI and basic diagnostics, but
    is not a complete reproduction of every installed user package.
-7. Keep the existing manual mesh configuration and mesh11sd disabled.
+7. Keep the existing manual 802.11s mesh configuration.
 
-The first-boot service guard explicitly disables mesh11sd and its
-autoconfiguration, matching the inactive/boot-disabled preflight state.
-It does not change wireless, LAN addresses, DHCP or firewall settings.
+Mesh11sd is deliberately excluded: TB2 uses manual 802.11s mesh with
+full wpad-mbedtls. The workflow verifies that mesh11sd is absent from
+the firmware manifest. No first-boot configuration override is included.
+Restoring a backup may leave the old mesh11sd configuration file, but
+the daemon is absent and cannot manage the network.
 
 Do not mix kernel modules from this custom build with official firmware
 or force-install mismatched official kernel modules into this image.
