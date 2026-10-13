@@ -47,13 +47,21 @@ jobs:
           cp ../patches/950-ath11k-five-rings-mx4200.patch package/kernel/mac80211/patches/ath11k/
           python3 ../scripts/bump-release.py package/kernel/mac80211/Makefile
           make defconfig
+          cp .config ../evidence/full.config
           grep -qx 'CONFIG_TARGET_qualcommax_ipq807x_DEVICE_linksys_mx4200v1=y' .config
           grep -qx 'CONFIG_PACKAGE_wpad-mbedtls=y' .config
+          missing_packages=0
           while IFS= read -r package_line; do
             case "$package_line" in
-              CONFIG_PACKAGE_*=y) grep -Fqx "$package_line" .config ;;
+              CONFIG_PACKAGE_*=y)
+                if ! grep -Fqx "$package_line" .config; then
+                  echo "::error::Requested build package missing after defconfig: $package_line"
+                  missing_packages=1
+                fi
+                ;;
             esac
           done < ../config/tb2.config
+          test "$missing_packages" -eq 0
           if grep -q '^CONFIG_PACKAGE_wpad-basic-mbedtls=y' .config; then exit 1; fi
           if grep -q '^CONFIG_PACKAGE_mesh11sd=y' .config; then exit 1; fi
           ./scripts/diffconfig.sh > ../evidence/diffconfig.txt
