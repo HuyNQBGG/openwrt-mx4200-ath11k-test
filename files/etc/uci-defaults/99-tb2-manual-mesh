@@ -1,0 +1,9 @@
+#!/bin/sh
+# TB2 preflight confirmed manual 802.11s with mesh11sd inactive/boot-disabled.
+# A sysupgrade config backup does not contain that init-service state.
+# Prevent the packaged mesh daemon from managing the restored manual setup.
+uci -q set mesh11sd.setup.enabled='0'
+uci -q set mesh11sd.setup.auto_config='0'
+uci -q commit mesh11sd
+/etc/init.d/mesh11sd disable
+exit 0

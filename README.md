@@ -2,6 +2,10 @@
 
 This recipe builds OpenWrt v25.12.5 for **Linksys MX4200 v1 only**,
 using the release commit and release-pinned package feeds.
+The package selection was supplemented from TB2's 2026-10-13 preflight
+inventory, including its existing upgrade UI, diagnostic command UI,
+ip-full and bridge/VXLAN kernel modules. Release-pinned package versions
+can differ from later packages installed on the router.
 It applies a community mitigation that halves five ath11k RX/monitor
 ring constants. `DP_RXDMA_REFILL_RING_SIZE` remains **2048** because
 that constant describes the receive buffer size, not ring depth.
@@ -40,6 +44,10 @@ Before flashing TB2:
    this recipe includes full wpad-mbedtls, LuCI and basic diagnostics, but
    is not a complete reproduction of every installed user package.
 7. Keep the existing manual mesh configuration and mesh11sd disabled.
+
+The first-boot service guard explicitly disables mesh11sd and its
+autoconfiguration, matching the inactive/boot-disabled preflight state.
+It does not change wireless, LAN addresses, DHCP or firewall settings.
 
 Do not mix kernel modules from this custom build with official firmware
 or force-install mismatched official kernel modules into this image.
